@@ -2,28 +2,187 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Game Breakout Toàn Màn Hình</title>
+  <title>Game Breakout</title>
   <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      transition: none !important;
+      animation: none !important;
     }
+
     html, body {
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background: #000;
+      background: black;
+      font-family: Arial, sans-serif;
+      user-select: none;
     }
-    canvas {
-      display: block;
+
+    #game-container {
+      position: fixed;
+      top: 0;
+      left: 0;
       width: 100vw;
       height: 100vh;
+      overflow: hidden;
+      background: black;
+    }
+
+    /* Vùng chơi Canvas nằm ở bên trái, chừa đúng 280px cho sidebar */
+    #gameCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: calc(100vw - 280px);
+      height: 100vh;
+      display: block;
+      background: black;
+    }
+
+    /* Bảng hướng dẫn luôn ghim cứng cố định ở cạnh phải, không có bất kỳ hiệu ứng trượt hay co giãn nào */
+    #sidebar {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 280px;
+      height: 100vh;
+      background: dimgray;
+      border-left: 2px solid gray;
+      color: white;
+      padding: 16px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow-y: auto;
+      font-size: 12px;
+      z-index: 10;
+    }
+
+    #sidebar h2 {
+      font-size: 14px;
+      font-weight: bold;
+      color: white;
+      margin-bottom: 2px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .divider {
+      height: 1px;
+      background: darkgray;
+      margin: 3px 0;
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: bold;
+      color: orange;
+      margin-bottom: 3px;
+      text-transform: uppercase;
+    }
+
+    .info-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      color: white;
+      line-height: 1.3;
+    }
+
+    .item-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge {
+      display: inline-block;
+      min-width: 44px;
+      padding: 2px 4px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 10px;
+      color: white;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    .badge-brick-2    { background: purple; }
+    .badge-brick-x    { background: gray; }
+    .badge-brick-bomb { background: darkred; }
+    .badge-patrol     { background: darkorange; }
+
+    .badge-expand     { background: green; }
+    .badge-multi      { background: dodgerblue; }
+    .badge-laser      { background: orangered; }
+    .badge-life       { background: red; }
+    .badge-pierce     { background: darkmagenta; }
+    .badge-shrink     { background: slategray; }
+
+    #btn-back-menu {
+      margin-top: auto;
+      background: steelblue;
+      color: white;
+      border: none;
+      padding: 9px;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      text-align: center;
+      border-radius: 2px;
+    }
+
+    #btn-back-menu:hover {
+      background: navy;
     }
   </style>
 </head>
 <body>
-  <canvas id="gameCanvas"></canvas>
+  <div id="game-container">
+    <canvas id="gameCanvas"></canvas>
+
+    <aside id="sidebar">
+      <h2>BẢNG HƯỚNG DẪN</h2>
+      <div class="divider"></div>
+
+      <div class="section-title">PHÍM ĐIỀU KHIỂN</div>
+      <ul class="info-list">
+        <li> Chuột / [←] [→] / [A] [D]: Di chuyển</li>
+        <li> Giữ Shift: Tăng tốc độ di chuyeern</li>
+        <li> Phím Space / Click: Bắn đạn</li>
+        <li> Phím ESC: Về Menu chọn màn</li>
+      </ul>
+
+      <div class="divider"></div>
+
+      <div class="section-title">Ý NGHĨA CÁC KHỐI</div>
+      <ul class="info-list">
+        <li class="item-row"><span class="badge badge-brick-2">[2]</span>: Gạch 2 máu (đập 2 lần)</li>
+        <li class="item-row"><span class="badge badge-brick-x">[X]</span>: Bất tử (không thể vỡ)</li>
+        <li class="item-row"><span class="badge badge-brick-bomb">[Explo]</span>: Nổ phá 8 ô xung quanh</li>
+        <li class="item-row"><span class="badge badge-patrol">[Barrier]</span>: Cản đường (3 máu)</li>
+      </ul>
+
+      <div class="divider"></div>
+
+      <div class="section-title">VẬT PHẨM (POWER-UPS)</div>
+      <ul class="info-list">
+        <li class="item-row"><span class="badge badge-expand">+Len</span>: Dài thanh đỡ (10s)</li>
+        <li class="item-row"><span class="badge badge-multi">Ball</span>: Tách thêm 2 bóng</li>
+        <li class="item-row"><span class="badge badge-laser">Laser</span>: Bắn súng laze (8s)</li>
+        <li class="item-row"><span class="badge badge-life">Life</span>: Cộng thêm 1 mạng</li>
+        <li class="item-row"><span class="badge badge-pierce">Pierce</span>: Bóng xuyên gạch (6s)</li>
+        <li class="item-row"><span class="badge badge-shrink">-Len</span>: Thu ngắn paddle (Bẫy)</li>
+      </ul>
+
+      <button id="btn-back-menu">QUAY VỀ MENU</button>
+    </aside>
+  </div>
+
   <script src="script.js"></script>
 </body>
 </html>
