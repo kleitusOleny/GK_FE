@@ -31,7 +31,7 @@
       background: black;
     }
 
-    /* Vùng chơi Canvas nằm ở bên trái, chừa đúng 280px cho sidebar */
+    /* Vùng chơi Canvas nằm ở bên trái, chừa 280px cho sidebar */
     #gameCanvas {
       position: absolute;
       top: 0;
@@ -42,7 +42,7 @@
       background: black;
     }
 
-    /* Bảng hướng dẫn luôn ghim cứng cố định ở cạnh phải, không có bất kỳ hiệu ứng trượt hay co giãn nào */
+    /* Bảng hướng dẫn luôn cố định ở cạnh phải */
     #sidebar {
       position: absolute;
       top: 0;
@@ -55,7 +55,7 @@
       padding: 16px 14px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
       overflow-y: auto;
       font-size: 12px;
       z-index: 10;
@@ -99,6 +99,7 @@
       gap: 8px;
     }
 
+    /* Huy hiệu nhãn (Badge) */
     .badge {
       display: inline-block;
       min-width: 44px;
@@ -123,6 +124,7 @@
     .badge-pierce     { background: darkmagenta; }
     .badge-shrink     { background: slategray; }
 
+    /* Nút Quay về Menu */
     #btn-back-menu {
       margin-top: auto;
       background: steelblue;
@@ -151,10 +153,10 @@
 
       <div class="section-title">PHÍM ĐIỀU KHIỂN</div>
       <ul class="info-list">
-        <li> Chuột / [←] [→] / [A] [D]: Di chuyển</li>
-        <li> Giữ Shift: Tăng tốc độ di chuyeern</li>
-        <li> Phím Space / Click: Bắn đạn</li>
-        <li> Phím ESC: Về Menu chọn màn</li>
+        <li>• Chuột / [←] [→] / [A] [D]: Di chuyển</li>
+        <li>• Giữ Shift: Tăng tốc chạy (x2)</li>
+        <li>• Phím Space / Click: Bắn đạn</li>
+        <li>• Phím ESC: Về Menu chọn màn</li>
       </ul>
 
       <div class="divider"></div>
@@ -164,7 +166,7 @@
         <li class="item-row"><span class="badge badge-brick-2">[2]</span>: Gạch 2 máu (đập 2 lần)</li>
         <li class="item-row"><span class="badge badge-brick-x">[X]</span>: Bất tử (không thể vỡ)</li>
         <li class="item-row"><span class="badge badge-brick-bomb">[Explo]</span>: Nổ phá 8 ô xung quanh</li>
-        <li class="item-row"><span class="badge badge-patrol">[Barrier]</span>: Cản đường (3 máu)</li>
+        <li class="item-row"><span class="badge badge-patrol">Barrier</span>: Cản đường (3 máu)</li>
       </ul>
 
       <div class="divider"></div>
